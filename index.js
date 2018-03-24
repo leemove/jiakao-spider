@@ -18,18 +18,29 @@ const questionSechema = mongoose.Schema({
   imageurl: String,
   sinaimg: String
 })
+const questionErrSechema = mongoose.Schema({
+  errId: Number,
+  msg: String,
+  body: String
+})
 
 const Question = mongoose.model('Questionk1', questionSechema)
+const Errk1 = mongoose.model('QuestionNotGetk1', questionErrSechema)
 
-const maxIndex = 2
-// const maxIndex = 1330
+// const maxIndex = 2
+const maxIndex = 1330
 let getCount = 0
 
-function main() {
+async function main() {
   let current = 1
   while(current <= maxIndex) {
     getData(current)
     current++
+    await new Promise((res, rej) => {
+      setTimeout(() => {
+        res()
+      }, 500);
+    })
   }
 }
 
@@ -38,12 +49,14 @@ function getData (index) {
   request.get(getUrl(index), function (err, res) {
     if (err) {
       console.error(`第${index}条数据抓取失败`)
+      saveErr(index, '抓取失败')
     }
     try {
       const questionObject = JSON.parse(res.body)
       questionObject.type = questionObject.Type
       saveData(questionObject)
     } catch (error) {
+      saveErr(index, '解析不正确', res.body)
       console.log(`第${index}条数据数据格式不正确`)
     }
   })
@@ -61,6 +74,7 @@ function saveData(data) {
   question.save(function (err) {
     if (err) {
       console.log(`第${data.id}条数据保存失败`)
+      saveErr(data.id, '保存失败')
     }
     getCount++
     console.log(`第${data.id}条数据保存成功,已抓取${getCount}条数据`)
@@ -70,6 +84,11 @@ function saveData(data) {
   })
 }
 
+
+function saveErr({id}, msg, body) {
+  const err = new Errk1({errId:id, msg, body})
+  err.save()
+}
 
 
 main()
