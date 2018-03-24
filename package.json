@@ -1,0 +1,8 @@
+{
+  "name": "jiakao-spider",
+  "version": "1.0.0",
+  "description": "爬取驾考题目",
+  "main": "index.js",
+  "author": "leemove <923522454@qq.com>",
+  "license": "MIT"
+}
