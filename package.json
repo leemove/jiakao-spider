@@ -4,5 +4,8 @@
   "description": "爬取驾考题目",
   "main": "index.js",
   "author": "leemove <923522454@qq.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "request": "^2.85.0"
+  }
 }
